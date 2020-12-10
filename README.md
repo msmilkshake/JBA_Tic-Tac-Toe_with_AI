@@ -1,161 +1,147 @@
-<h2 style="text-align: center;">Stage 3/5: Watch 'em fight</h2>
+<h2 style="text-align: center;">Stage 4/5: Signs of intelligence</h2>
 
 <h2 style="text-align: center;">Description</h2>
 
-<p>It is time to make some variations of the game possible. What if you want to play with a friend and not with AI? What if you get tired of playing the game and want to see a match between two AI? Finally, you need to be able to play either the first move or the second move playing against AI.</p>
+<p>Let's write a "medium" level difficulty. Compared to randomly picking a cell to take a move, this level is considerably smarter.<br>
+  <br>
+  The "medium" level difficulty makes a move using the following process:</p>
 
-<p>Write a menu loop, which can interpret two commands: "start" and "exit".</p>
+<ol>
+  <li>If it can win in one move (if it has two in a row), it places a third to get three in a row and win.</li>
+  <li>If the opponent can win in one move, it plays the third itself to block the opponent to win.</li>
+  <li>Otherwise, it makes a random move.</li>
+</ol>
 
-<p>The command "start" should take two parameters: who will play ‘X’ and who will play ‘O.’ Two parameters are possible for now: "user" to play as a human and "easy" to play as an easy level AI. In the next steps, you will add "medium" and "hard" parameters.</p>
+<p>Despite the randomness of the third rule, this level is a lot harder to beat. This level stops all simple attempts to beat it due to the second rule, and always wins when it can due to the first rule.</p>
 
-<p>The command "exit" should simply terminate the program.</p>
-
-<p>Do not forget to handle incorrect input!</p>
+<p>You also should add "medium" parameter to be able to play against this level. And, of course, it should be possible to make "easy" vs "medium" matchup!</p>
 
 <h2 style="text-align: center;">Example</h2>
 
 <p>The example below shows how your program should work.</p>
 
-<pre><code class="language-no-highlight">Input command: start
-Bad parameters!
-Input command: start easy
-Bad parameters!
-Input command: start easy easy
+<pre><code class="language-no-highlight">Input command: start user medium
 ---------
 |       |
 |       |
 |       |
----------
-Making move level "easy"
----------
-|       |
-|     X |
-|       |
----------
-Making move level "easy"
----------
-|       |
-| O   X |
-|       |
----------
-Making move level "easy"
----------
-|       |
-| O   X |
-|     X |
----------
-Making move level "easy"
----------
-|       |
-| O   X |
-|   O X |
----------
-Making move level "easy"
----------
-|       |
-| O X X |
-|   O X |
----------
-Making move level "easy"
----------
-|     O |
-| O X X |
-|   O X |
----------
-Making move level "easy"
----------
-| X   O |
-| O X X |
-|   O X |
----------
-X wins
-
-Input command: start easy user
----------
-|       |
-|       |
-|       |
----------
-Making move level "easy"
----------
-|       |
-|       |
-|     X |
 ---------
 Enter the coordinates: 2 2
 ---------
 |       |
-|   O   |
-|     X |
----------
-Making move level "easy"
----------
 |   X   |
-|   O   |
-|     X |
+|       |
 ---------
-Enter the coordinates: 1 1
+Making move level "medium"
 ---------
+|       |
 |   X   |
-|   O   |
-| O   X |
----------
-Making move level "easy"
----------
-|   X X |
-|   O   |
-| O   X |
----------
-Enter the coordinates: 3 2
----------
-|   X X |
-|   O O |
-| O   X |
----------
-Making move level "easy"
----------
-| X X X |
-|   O O |
-| O   X |
----------
-X wins
-
-Input command: start user user
----------
-|       |
-|       |
-|       |
----------
-Enter the coordinates: 1 1
----------
-|       |
-|       |
-| X     |
----------
-Enter the coordinates: 2 2
----------
-|       |
-|   O   |
-| X     |
----------
-Enter the coordinates: 1 2
----------
-|       |
-| X O   |
-| X     |
----------
-Enter the coordinates: 2 1
----------
-|       |
-| X O   |
-| X O   |
+| O     |
 ---------
 Enter the coordinates: 1 3
 ---------
 | X     |
-| X O   |
-| X O   |
+|   X   |
+| O     |
 ---------
-X wins
+Making move level "medium"
+---------
+| X     |
+|   X   |
+| O   O |
+---------
+Enter the coordinates: 2 1
+---------
+| X     |
+|   X   |
+| O X O |
+---------
+Making move level "medium"
+---------
+| X O   |
+|   X   |
+| O X O |
+---------
+Enter the coordinates: 1 2
+---------
+| X O   |
+| X X   |
+| O X O |
+---------
+Making move level "medium"
+---------
+| X O   |
+| X X O |
+| O X O |
+---------
+Enter the coordinates: 3 3
+---------
+| X O X |
+| X X O |
+| O X O |
+---------
+Draw
+
+Input command: start medium user
+---------
+|       |
+|       |
+|       |
+---------
+Making move level "medium"
+---------
+|       |
+|       |
+|   X   |
+---------
+Enter the coordinates: 2 2
+---------
+|       |
+|   O   |
+|   X   |
+---------
+Making move level "medium"
+---------
+|       |
+|   O   |
+| X X   |
+---------
+Enter the coordinates: 3 1
+---------
+|       |
+|   O   |
+| X X O |
+---------
+Making move level "medium"
+---------
+| X     |
+|   O   |
+| X X O |
+---------
+Enter the coordinates: 1 2
+---------
+| X     |
+| O O   |
+| X X O |
+---------
+Making move level "medium"
+---------
+| X     |
+| O O X |
+| X X O |
+---------
+Enter the coordinates: 3 3
+---------
+| X   O |
+| O O X |
+| X X O |
+---------
+Making move level "medium"
+---------
+| X X O |
+| O O X |
+| X X O |
+---------
+Draw
 
 Input command: exit</code></pre>

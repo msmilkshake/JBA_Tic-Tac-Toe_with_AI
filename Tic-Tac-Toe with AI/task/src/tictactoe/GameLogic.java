@@ -1,6 +1,7 @@
 package tictactoe;
 
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +20,9 @@ public class GameLogic {
     private char winner = '\0';
     private int turnCount = 0;
     private boolean isFinished = false;
-    private boolean isDraw = false;
+
+    private int[][] winSpots = new int[0][];
+    private int[][] blockSpots = new int[0][];
 
     private void swapTurn() {
         turn = turn == 'X' ? 'O' : 'X';
@@ -35,15 +38,21 @@ public class GameLogic {
             --y;
             y = Math.abs(2 - y);
         }
-
         if (grid[y][x] != ' ') {
             return false;
         }
-        grid[y][x] = turn;
-        ++turnCount;
 
-        checkWinner();
+        System.err.println("Played at: " + x + ", " + y);
+        grid[y][x] = turn;
+
+        blockSpots = evaluateBoard(turn);
+        ++turnCount;
         updateState();
+
+        if (!isFinished) {
+            swapTurn();
+            winSpots = evaluateBoard(turn);
+        }
 
         return true;
     }
@@ -51,46 +60,62 @@ public class GameLogic {
     private void updateState() {
         if (winner != '\0' || turnCount == 9) {
             isFinished = true;
-            isDraw = winner == '\0';
         }
     }
 
-    private void checkWinner() {
+    private int[][] evaluateBoard(char player) {
+        int[][] hotSpots = new int[0][];
         int rows = 0;
         int cols = 0;
         int diag1 = 0;
         int diag2 = 0;
 
-        for (int i = 0; i < 3; ++i) {
-            int y = Math.abs(2 - i);
+        List<int[]> blankSpots = new ArrayList<>();
 
+        for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                if (grid[i][j] == turn) {
-                    ++rows;
+                rows += grid[i][j] == player ? 1 : 0;
+                cols += grid[j][i] == player ? 1 : 0;
+            }
+
+            // Backtrack, find empty cell if sum == 2:
+            for (int j = 2; j >= 0; --j) {
+                if (rows == 2 && grid[i][j] == ' ') {
+                    blankSpots.add(new int[] {j, i});
                 }
-                if (grid[j][i] == turn) {
-                    ++cols;
+                if (cols == 2 && grid[j][i] == ' ') {
+                    blankSpots.add(new int[] {i, j});
                 }
             }
 
             rows = rows >= 3 ? 3 : 0;
             cols = cols >= 3 ? 3 : 0;
 
-            if (grid[i][i] == turn) {
-                ++diag1;
+            int y = Math.abs(2 - i);
+            diag1 += grid[i][i] == player ? 1 : 0;
+            diag2 += grid[y][i] == player ? 1 : 0;
+        }
+
+        // Backtrack, find empty cell if sum == 2:
+        for (int k = 2; k >= 0; --k) {
+            int y = Math.abs(2 - k);
+            if (diag1 == 2 && grid[k][k] == ' ') {
+                blankSpots.add(new int[] {k, k});
             }
-            if (grid[y][i] == turn) {
-                ++diag2;
+            if (diag2 == 2 && grid[y][k] == ' ') {
+                blankSpots.add(new int[] {k, y});
             }
         }
+
+        hotSpots = new int[blankSpots.size()][];
+        blankSpots.toArray(hotSpots);
 
         List<Integer> sums =
                 Arrays.asList(rows, cols, diag1, diag2);
         if (Collections.max(sums) >= 3) {
-            winner = turn;
-        } else {
-            swapTurn();
+            winner = player;
         }
+        return hotSpots;
     }
 
     public int[][] getFreeCells() {
@@ -104,6 +129,10 @@ public class GameLogic {
         }
         int[][] arr = new int[freeCells.size()][];
         return freeCells.toArray(arr);
+    }
+
+    public boolean hasWinner() {
+        return winner != '\0';
     }
 
     @Override
@@ -128,15 +157,19 @@ public class GameLogic {
         return isFinished;
     }
 
-    public boolean isDraw() {
-        return isDraw;
-    }
-
     public char getWinner() {
         return winner;
     }
 
     public char getTurn() {
         return turn;
+    }
+
+    public int[][] getWinSpots() {
+        return  winSpots;
+    }
+
+    public int[][] getBlockSpots() {
+        return blockSpots;
     }
 }

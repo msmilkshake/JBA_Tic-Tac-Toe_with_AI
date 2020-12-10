@@ -40,6 +40,7 @@ public class TextUI {
         System.out.println(game);
 
         while (!game.isFinished()) {
+
             switch (game.getTurn()) {
                 case 'X':
                     play(player1);
@@ -64,7 +65,7 @@ public class TextUI {
         boolean correctCommands = false;
         String cmdRgx = "(\\w+) ?(?:(\\w+) (\\w+))?";
         String actionRgx = "start|exit";
-        String playerRgx = "user|easy";
+        String playerRgx = "user|easy|medium";
 
         while (!correctCommands) {
             System.out.println("Input command:");
@@ -100,6 +101,13 @@ public class TextUI {
                 break;
             case "easy":
                 aiEasyPlay();
+                System.err.flush();
+                System.out.println("Making move level \"easy\"");
+                break;
+            case "medium":
+                aiMediumPlay();
+                System.err.flush();
+                System.out.println("Making move level \"medium\"");
                 break;
         }
     }
@@ -133,22 +141,51 @@ public class TextUI {
     }
 
     private void aiEasyPlay() {
-        try {
-            Thread.sleep(750);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Making move level \"easy\"");
         int[][] freeCells = game.getFreeCells();
-        int cell = rng.nextInt(freeCells.length);
-        game.play(freeCells[cell][0], freeCells[cell][1]);
+        int randomCell = rng.nextInt(freeCells.length);
+        System.err.println("Played a random free spot.");
+        game.play(freeCells[randomCell][0], freeCells[randomCell][1]);
+    }
+
+    private void aiMediumPlay() {
+        int[][] bestSpots = game.getWinSpots();
+        System.err.println(game.getTurn() + " TURN.");
+        System.err.println("Analyzing possible win spots:");
+        for (int[] spot : bestSpots) {
+            System.err.println("-- " + spot[0] + ", " + spot[1]);
+        }
+        if (bestSpots.length == 0) {
+            System.err.println("-- No win spots.");
+        }
+        if (bestSpots.length > 0) {
+            int randomCell = rng.nextInt(bestSpots.length);
+            System.err.println("Chosen " + randomCell + " index of win spot.");
+            game.play(bestSpots[randomCell][0], bestSpots[randomCell][1]);
+            return;
+        }
+
+        bestSpots = game.getBlockSpots();
+        System.err.println("Analyzing possible block spots:");
+        for (int[] spot : bestSpots) {
+            System.err.println("-- " + spot[0] + ", " + spot[1]);
+        }
+        if (bestSpots.length == 0) {
+            System.err.println("-- No block spots.");
+        }
+        if (bestSpots.length > 0) {
+            int randomCell = rng.nextInt(bestSpots.length);
+            System.err.println("Chosen index " + randomCell + " of block spot.");
+            game.play(bestSpots[randomCell][0], bestSpots[randomCell][1]);
+            return;
+        }
+        aiEasyPlay();
     }
 
     private void printWinner() {
-        if (game.isDraw()) {
-            System.out.println("Draw");
-        } else {
+        if (game.hasWinner()) {
             System.out.println(game.getWinner() + " wins");
+        } else {
+            System.out.println("Draw");
         }
     }
 }
