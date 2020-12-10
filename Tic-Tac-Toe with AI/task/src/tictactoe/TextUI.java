@@ -1,6 +1,8 @@
 package tictactoe;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -51,7 +53,6 @@ public class TextUI {
             }
             System.out.println(game);
         }
-
         printWinner();
     }
 
@@ -65,7 +66,7 @@ public class TextUI {
         boolean correctCommands = false;
         String cmdRgx = "(\\w+) ?(?:(\\w+) (\\w+))?";
         String actionRgx = "start|exit";
-        String playerRgx = "user|easy|medium";
+        String playerRgx = "user|easy|medium|hard";
 
         while (!correctCommands) {
             System.out.println("Input command:");
@@ -100,14 +101,16 @@ public class TextUI {
                 humanPlay();
                 break;
             case "easy":
-                aiEasyPlay();
-                System.err.flush();
+                aiPlay("easy");
                 System.out.println("Making move level \"easy\"");
                 break;
             case "medium":
-                aiMediumPlay();
-                System.err.flush();
+                aiPlay("medium");
                 System.out.println("Making move level \"medium\"");
+                break;
+            case "hard":
+                aiPlay("hard");
+                System.out.println("Making move level \"hard\"");
                 break;
         }
     }
@@ -140,45 +143,26 @@ public class TextUI {
         }
     }
 
-    private void aiEasyPlay() {
+    private void aiPlay(String difficulty) {
+        int[][] moves = new int[0][];
+        switch (difficulty) {
+            case "easy":
+                break;
+            case "medium":
+                moves = game.getMediumMoves();
+                break;
+            case "hard":
+                moves = game.getHardMoves();
+        }
+        if (moves.length > 0) {
+            int randomCell = rng.nextInt(moves.length);
+            game.play(moves[randomCell][0], moves[randomCell][1]);
+            return;
+        }
+
         int[][] freeCells = game.getFreeCells();
         int randomCell = rng.nextInt(freeCells.length);
-        System.err.println("Played a random free spot.");
         game.play(freeCells[randomCell][0], freeCells[randomCell][1]);
-    }
-
-    private void aiMediumPlay() {
-        int[][] bestSpots = game.getWinSpots();
-        System.err.println(game.getTurn() + " TURN.");
-        System.err.println("Analyzing possible win spots:");
-        for (int[] spot : bestSpots) {
-            System.err.println("-- " + spot[0] + ", " + spot[1]);
-        }
-        if (bestSpots.length == 0) {
-            System.err.println("-- No win spots.");
-        }
-        if (bestSpots.length > 0) {
-            int randomCell = rng.nextInt(bestSpots.length);
-            System.err.println("Chosen " + randomCell + " index of win spot.");
-            game.play(bestSpots[randomCell][0], bestSpots[randomCell][1]);
-            return;
-        }
-
-        bestSpots = game.getBlockSpots();
-        System.err.println("Analyzing possible block spots:");
-        for (int[] spot : bestSpots) {
-            System.err.println("-- " + spot[0] + ", " + spot[1]);
-        }
-        if (bestSpots.length == 0) {
-            System.err.println("-- No block spots.");
-        }
-        if (bestSpots.length > 0) {
-            int randomCell = rng.nextInt(bestSpots.length);
-            System.err.println("Chosen index " + randomCell + " of block spot.");
-            game.play(bestSpots[randomCell][0], bestSpots[randomCell][1]);
-            return;
-        }
-        aiEasyPlay();
     }
 
     private void printWinner() {
