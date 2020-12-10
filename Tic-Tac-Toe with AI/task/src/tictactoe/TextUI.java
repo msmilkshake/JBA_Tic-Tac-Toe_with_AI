@@ -1,72 +1,79 @@
 package tictactoe;
 
 
+import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class TextUI {
-    private Scanner scn;
-    private GameLogic game;
+    private final Scanner scn;
+    private final GameLogic game = new GameLogic();
+    private final Random rng = new Random();
 
     public TextUI(Scanner scn) {
         this.scn = scn;
-        game = new GameLogic();
     }
 
     public void start() {
-        game.setGridState(getInput());
-        System.out.println(game);
-        enterCoordinates();
+        while (!game.isFinished()) {
+            System.out.println(game);
+
+            switch (game.getTurn()) {
+                case 'X':
+                    playerPlay();
+                    break;
+                case 'O':
+                    aiPlay();
+                    break;
+            }
+        }
+
         System.out.println(game);
         printWinner();
     }
 
-    private String getInput() {
-        while (true) {
-            System.out.println("Enter cells:");
-            String input = scn.nextLine();
-            if (input.matches("[xoXO_]{9}")) {
-                return input;
-            }
-            System.out.println("Wrong input. Try again.");
-        }
-    }
-
-    private void enterCoordinates() {
+    private void playerPlay() {
         String rgx = "(\\d+) (\\d+)";
-        int x = -1;
-        int y = -1;
 
-        while (true) {
+        boolean isValidPlay = false;
+        while (!isValidPlay) {
             System.out.println("Enter the coordinates:");
             Matcher m = Pattern.compile(rgx).matcher(scn.nextLine());
 
-            if (m.matches()) {
-                x = Integer.parseInt(m.group(1)) - 1;
-                y = Integer.parseInt(m.group(2)) - 1;
-                if (x > 2 || y > 2) {
-                    System.out.println("Coordinates should be from 1 to 3!");
-                } else if (game.play(x, y)) {
-                    break;
-                } else {
-                    System.out.println("This cell is occupied! Choose another one!");
-                }
-            } else {
+            if (!m.matches()) {
                 System.out.println("You should enter numbers!");
+                continue;
+            }
+
+            int x = Integer.parseInt(m.group(1));
+            int y = Integer.parseInt(m.group(2));
+
+            if (x < 1 || x > 3 || y < 1 || y > 3) {
+                System.out.println("Coordinates should be from 1 to 3!");
+                continue;
+            }
+
+            isValidPlay = game.play(x, y, true);
+            if (!isValidPlay) {
+                System.out.println("This cell is occupied! Choose another one!");
             }
         }
     }
 
-    private void printWinner() {
-        if (game.checkWinner()) {
-            System.out.println(game.getTurn() + " wins");
-        } else if (game.getTurnCount() == 9) {
-            System.out.println("Draw");
-        } else {
-            System.out.println("Game not finished");
-        }
+    private void aiPlay() {
+        System.out.println("Making move level \"easy\"");
+        int[][] freeCells = game.getFreeCells();
+        int cell = rng.nextInt(freeCells.length);
+        game.play(freeCells[cell][0], freeCells[cell][1]);
     }
 
+    private void printWinner() {
+        if (game.isDraw()) {
+            System.out.println("Draw");
+        } else {
+            System.out.println(game.getWinner() + " wins");
+        }
+    }
 }
