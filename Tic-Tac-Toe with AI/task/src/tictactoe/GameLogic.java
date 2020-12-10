@@ -26,6 +26,16 @@ public class GameLogic {
     }
 
     public boolean play(int x, int y) {
+        return play(x, y, false);
+    }
+
+    public boolean play(int x, int y, boolean humanCoords) {
+        if (humanCoords) {
+            --x;
+            --y;
+            y = Math.abs(2 - y);
+        }
+
         if (grid[y][x] != ' ') {
             return false;
         }
@@ -36,13 +46,6 @@ public class GameLogic {
         updateState();
 
         return true;
-    }
-
-    public boolean play(int x, int y, boolean humanCoords) {
-        --x;
-        --y;
-        y = Math.abs(2 - y);
-        return play(x, y);
     }
 
     private void updateState() {

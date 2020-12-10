@@ -1,64 +1,161 @@
-<h2 style="text-align: center;">Stage 2/5: Easy does it</h2>
+<h2 style="text-align: center;">Stage 3/5: Watch 'em fight</h2>
 
 <h2 style="text-align: center;">Description</h2>
 
-<p>Now it is time to make a working game. In this version of the program, the user will be playing as X, and the "easy" level computer will be playing as O. </p>
+<p>It is time to make some variations of the game possible. What if you want to play with a friend and not with AI? What if you get tired of playing the game and want to see a match between two AI? Finally, you need to be able to play either the first move or the second move playing against AI.</p>
 
-<p>Let's make it so that at this level the computer will make random moves. This level will be perfect for those who play this game for the first time! Well, though... You can create a level of difficulty that will always give in and never win the game. You can implement such a level along with "easy" level, if you want, but it will not be tested.</p>
+<p>Write a menu loop, which can interpret two commands: "start" and "exit".</p>
 
-<p>When starting the program, an empty field should be displayed and the first to start the game should be the user as X. Next the computer should make its move as O. And so on until someone will win or there will be a draw.</p>
+<p>The command "start" should take two parameters: who will play ‘X’ and who will play ‘O.’ Two parameters are possible for now: "user" to play as a human and "easy" to play as an easy level AI. In the next steps, you will add "medium" and "hard" parameters.</p>
 
-<p>At the very end of the game you need to print the final result of the game.</p>
+<p>The command "exit" should simply terminate the program.</p>
+
+<p>Do not forget to handle incorrect input!</p>
 
 <h2 style="text-align: center;">Example</h2>
 
 <p>The example below shows how your program should work.</p>
 
-<pre><code class="language-no-highlight">---------
+<pre><code class="language-no-highlight">Input command: start
+Bad parameters!
+Input command: start easy
+Bad parameters!
+Input command: start easy easy
+---------
 |       |
 |       |
 |       |
+---------
+Making move level "easy"
+---------
+|       |
+|     X |
+|       |
+---------
+Making move level "easy"
+---------
+|       |
+| O   X |
+|       |
+---------
+Making move level "easy"
+---------
+|       |
+| O   X |
+|     X |
+---------
+Making move level "easy"
+---------
+|       |
+| O   X |
+|   O X |
+---------
+Making move level "easy"
+---------
+|       |
+| O X X |
+|   O X |
+---------
+Making move level "easy"
+---------
+|     O |
+| O X X |
+|   O X |
+---------
+Making move level "easy"
+---------
+| X   O |
+| O X X |
+|   O X |
+---------
+X wins
+
+Input command: start easy user
+---------
+|       |
+|       |
+|       |
+---------
+Making move level "easy"
+---------
+|       |
+|       |
+|     X |
 ---------
 Enter the coordinates: 2 2
 ---------
 |       |
-|   X   |
-|       |
----------
-Making move level "easy"
----------
-| O     |
-|   X   |
-|       |
----------
-Enter the coordinates: 3 1
----------
-| O     |
-|   X   |
+|   O   |
 |     X |
 ---------
 Making move level "easy"
 ---------
-| O     |
-| O X   |
+|   X   |
+|   O   |
 |     X |
 ---------
 Enter the coordinates: 1 1
 ---------
-| O     |
-| O X   |
-| X   X |
+|   X   |
+|   O   |
+| O   X |
 ---------
 Making move level "easy"
 ---------
-| O     |
-| O X O |
-| X   X |
+|   X X |
+|   O   |
+| O   X |
+---------
+Enter the coordinates: 3 2
+---------
+|   X X |
+|   O O |
+| O   X |
+---------
+Making move level "easy"
+---------
+| X X X |
+|   O O |
+| O   X |
+---------
+X wins
+
+Input command: start user user
+---------
+|       |
+|       |
+|       |
+---------
+Enter the coordinates: 1 1
+---------
+|       |
+|       |
+| X     |
+---------
+Enter the coordinates: 2 2
+---------
+|       |
+|   O   |
+| X     |
+---------
+Enter the coordinates: 1 2
+---------
+|       |
+| X O   |
+| X     |
 ---------
 Enter the coordinates: 2 1
 ---------
-| O     |
-| O X O |
-| X X X |
+|       |
+| X O   |
+| X O   |
 ---------
-X wins</code></pre>
+Enter the coordinates: 1 3
+---------
+| X     |
+| X O   |
+| X O   |
+---------
+X wins
+
+Input command: exit</code></pre>
